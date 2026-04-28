@@ -5,10 +5,15 @@ import main.java.com.bibliotech.model.Categoria;
 import main.java.com.bibliotech.model.Ebook;
 import main.java.com.bibliotech.model.Libro;
 import main.java.com.bibliotech.model.Prestamo;
+import main.java.com.bibliotech.model.Sancion;
 import main.java.com.bibliotech.model.Socio;
+import main.java.com.bibliotech.repository.CsvPrestamoRepository;
+import main.java.com.bibliotech.repository.CsvRecursoRepository;
+import main.java.com.bibliotech.repository.CsvSancionRepository;
+import main.java.com.bibliotech.repository.CsvSocioRepository;
 import main.java.com.bibliotech.repository.InMemoryPrestamoRepository;
-import main.java.com.bibliotech.repository.InMemorySancionRepository;
 import main.java.com.bibliotech.repository.InMemoryRecursoRepository;
+import main.java.com.bibliotech.repository.InMemorySancionRepository;
 import main.java.com.bibliotech.repository.InMemorySocioRepository;
 import main.java.com.bibliotech.service.PrestamoService;
 import main.java.com.bibliotech.service.PrestamoServiceImpl;
@@ -25,8 +30,8 @@ public class Main {
     private static final Scanner scanner = new Scanner(System.in);
 
     // Repositorios
-    private static final InMemoryRecursoRepository recursoRepo = new InMemoryRecursoRepository();
-    private static final InMemorySocioRepository socioRepo     = new InMemorySocioRepository();
+    private static final InMemoryRecursoRepository recursoRepo   = new InMemoryRecursoRepository();
+    private static final InMemorySocioRepository socioRepo       = new InMemorySocioRepository();
     private static final InMemoryPrestamoRepository prestamoRepo = new InMemoryPrestamoRepository();
     private static final InMemorySancionRepository sancionRepo   = new InMemorySancionRepository();
 
@@ -48,6 +53,7 @@ public class Main {
                     case 1 -> menuRecursos();
                     case 2 -> menuSocios();
                     case 3 -> menuPrestamos();
+                    case 4 -> exportarACsv();
                     case 0 -> ejecutando = false;
                     default -> System.out.println("Opción inválida.");
                 }
@@ -69,6 +75,7 @@ public class Main {
         System.out.println("1. Gestión de Recursos");
         System.out.println("2. Gestión de Socios");
         System.out.println("3. Gestión de Préstamos");
+        System.out.println("4. Guardar datos en CSV");
         System.out.println("0. Salir");
     }
 
@@ -114,6 +121,8 @@ public class Main {
         System.out.println("2. Registrar Docente");
         System.out.println("3. Buscar por ID");
         System.out.println("4. Listar todos");
+        System.out.println("5. Ver sanción activa de un socio");
+        System.out.println("6. Ver historial de sanciones de un socio");
 
         int opcion = leerEntero("Opción: ");
         switch (opcion) {
@@ -125,6 +134,26 @@ public class Main {
                 System.out.println("  " + socio);
             }
             case 4 -> socioService.listarTodos().forEach(s -> System.out.println("  " + s));
+            case 5 -> {
+                int id = leerEntero("ID del socio: ");
+                sancionRepo.buscarSancionActivaPorSocio(id).ifPresentOrElse(
+                    s -> System.out.printf("  ⚠ Sancionado hasta %s (%d día(s) de retraso)%n", s.fechaFin(), s.diasRetraso()),
+                    () -> System.out.println("  ✓ El socio no tiene sanciones activas.")
+                );
+            }
+            case 6 -> {
+                int id = leerEntero("ID del socio: ");
+                List<Sancion> sanciones = sancionRepo.buscarPorSocio(id);
+                if (sanciones.isEmpty()) {
+                    System.out.println("  El socio no registra sanciones.");
+                } else {
+                    sanciones.forEach(s -> System.out.printf(
+                        "  Desde: %s | Hasta: %s | Retraso: %d día(s) | %s%n",
+                        s.fechaInicio(), s.fechaFin(), s.diasRetraso(),
+                        s.estaActiva() ? "ACTIVA" : "CUMPLIDA"
+                    ));
+                }
+            }
             default -> System.out.println("Opción inválida.");
         }
     }
@@ -274,4 +303,31 @@ public class Main {
             }
         }
     }
+
+    // -------------------------------------------------------
+    // Exportación CSV
+    // -------------------------------------------------------
+
+    private static void exportarACsv() {
+        System.out.println("\n Exportando datos a CSV...");
+
+        CsvRecursoRepository csvRecursos = new CsvRecursoRepository();
+        recursoRepo.buscarTodos().forEach(csvRecursos::guardar);
+
+        CsvSocioRepository csvSocios = new CsvSocioRepository();
+        socioRepo.buscarTodos().forEach(csvSocios::guardar);
+
+        CsvPrestamoRepository csvPrestamos = new CsvPrestamoRepository();
+        prestamoRepo.buscarTodos().forEach(csvPrestamos::guardar);
+
+        CsvSancionRepository csvSanciones = new CsvSancionRepository();
+        sancionRepo.buscarTodos().forEach(csvSanciones::guardar);
+
+        System.out.println("✓ Datos exportados a la carpeta datos/");
+        System.out.println("  - datos/recursos.csv  (" + recursoRepo.buscarTodos().size() + " registros)");
+        System.out.println("  - datos/socios.csv    (" + socioRepo.buscarTodos().size() + " registros)");
+        System.out.println("  - datos/prestamos.csv (" + prestamoRepo.buscarTodos().size() + " registros)");
+        System.out.println("  - datos/sanciones.csv (" + sancionRepo.buscarTodos().size() + " registros)");
+    }
+
 }
