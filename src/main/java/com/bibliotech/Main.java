@@ -7,6 +7,7 @@ import main.java.com.bibliotech.model.Libro;
 import main.java.com.bibliotech.model.Prestamo;
 import main.java.com.bibliotech.model.Socio;
 import main.java.com.bibliotech.repository.InMemoryPrestamoRepository;
+import main.java.com.bibliotech.repository.InMemorySancionRepository;
 import main.java.com.bibliotech.repository.InMemoryRecursoRepository;
 import main.java.com.bibliotech.repository.InMemorySocioRepository;
 import main.java.com.bibliotech.service.PrestamoService;
@@ -23,15 +24,16 @@ public class Main {
 
     private static final Scanner scanner = new Scanner(System.in);
 
-
+    // Repositorios
     private static final InMemoryRecursoRepository recursoRepo = new InMemoryRecursoRepository();
     private static final InMemorySocioRepository socioRepo     = new InMemorySocioRepository();
     private static final InMemoryPrestamoRepository prestamoRepo = new InMemoryPrestamoRepository();
+    private static final InMemorySancionRepository sancionRepo   = new InMemorySancionRepository();
 
-
+    // Servicios (inyección por constructor)
     private static final RecursoService recursoService   = new RecursoServiceImpl(recursoRepo);
     private static final SocioService socioService       = new SocioServiceImpl(socioRepo);
-    private static final PrestamoService prestamoService = new PrestamoServiceImpl(recursoRepo, socioRepo, prestamoRepo);
+    private static final PrestamoService prestamoService = new PrestamoServiceImpl(recursoRepo, socioRepo, prestamoRepo, sancionRepo);
 
     public static void main(String[] args) {
         System.out.println("=== Bienvenido a BiblioTech ===");
@@ -58,7 +60,9 @@ public class Main {
         scanner.close();
     }
 
-
+    // -------------------------------------------------------
+    // Menús
+    // -------------------------------------------------------
 
     private static void mostrarMenuPrincipal() {
         System.out.println("\n--- Menú Principal ---");
@@ -156,7 +160,9 @@ public class Main {
         }
     }
 
-
+    // -------------------------------------------------------
+    // Acciones
+    // -------------------------------------------------------
 
     private static void registrarLibro() {
         System.out.println("-- Nuevo Libro --");
@@ -201,6 +207,10 @@ public class Main {
         System.out.println("✓ Socio registrado.");
     }
 
+    // -------------------------------------------------------
+    // Helpers de impresión
+    // -------------------------------------------------------
+
     private static void imprimirRecursos(List<?> recursos) {
         if (recursos.isEmpty()) {
             System.out.println("  No se encontraron recursos.");
@@ -221,6 +231,9 @@ public class Main {
         ));
     }
 
+    // -------------------------------------------------------
+    // Helpers de lectura
+    // -------------------------------------------------------
 
     private static String leerTexto(String prompt) {
         System.out.print(prompt);
