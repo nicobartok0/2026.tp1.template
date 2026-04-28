@@ -11,7 +11,7 @@ import main.java.com.bibliotech.model.Prestamo;
 import main.java.com.bibliotech.model.Recurso;
 import main.java.com.bibliotech.model.Sancion;
 import main.java.com.bibliotech.model.Socio;
-import main.java.com.bibliotech.repository.InMemoryPrestamoRepository;
+import main.java.com.bibliotech.repository.PrestamoRepository;
 import main.java.com.bibliotech.repository.RecursoRepository;
 import main.java.com.bibliotech.repository.SancionRepository;
 import main.java.com.bibliotech.repository.SocioRepository;
@@ -26,12 +26,12 @@ public class PrestamoServiceImpl implements PrestamoService {
 
     private final RecursoRepository recursoRepository;
     private final SocioRepository socioRepository;
-    private final InMemoryPrestamoRepository prestamoRepository;
+    private final PrestamoRepository prestamoRepository;
     private final SancionRepository sancionRepository;
 
     public PrestamoServiceImpl(RecursoRepository recursoRepository,
                                SocioRepository socioRepository,
-                               InMemoryPrestamoRepository prestamoRepository,
+                               PrestamoRepository prestamoRepository,
                                SancionRepository sancionRepository) {
         this.recursoRepository  = recursoRepository;
         this.socioRepository    = socioRepository;

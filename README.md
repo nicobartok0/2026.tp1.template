@@ -5,11 +5,11 @@
 
 ### Datos del Alumno
 
-| Campo | Respuesta |
-| :--- | :--- |
-| **Nombre** | |
-| **Apellido** | |
-| **Legajo** | |
+| Campo | Respuesta  |
+| :--- |:-----------|
+| **Nombre** | Nicolás    |
+| **Apellido** | Bartolomeo |
+| **Legajo** | 63148      |
 
 > **Fecha de entrega:** 28 de Abril de 2026
 

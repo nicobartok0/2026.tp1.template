@@ -12,4 +12,6 @@ public interface PrestamoRepository extends Repository<Prestamo, Integer> {
     List<Prestamo> buscarPorIsbn(String isbn);
 
     List<Prestamo> buscarPorEstado(EstadoPrestamo estado);
+
+    int generarId();
 }

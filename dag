@@ -1,0 +1,16 @@
+  1-inicializar-proyecto-con-estructura-de-paquetes[m
+  11-featuregeneric-repository[m
+  12-featurerecurso-repository[m
+  13-featuressocio-repository[m
+  14-featuresprestamo-repository[m
+  15-featurerecurso-service[m
+  16-featuressocio-service[m
+  17-featuresprestamo-service[m
+  18-featurescli[m
+* [32m19-featuressancion[m
+  20-featurespersistencia-archivos[m
+  3-featurecustom-exceptions[m
+  5-featuremodel-interfaces[m
+  6-featuremodel-socios[m
+  7-featuresprestamo-record[m
+  main[m
